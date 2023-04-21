@@ -1,8 +1,10 @@
-# Java ContinueLearning  
+# Java Learning  
 
 [TOC]
 
-## 类，抽象类，接口
+## Java基础
+
+### 类，抽象类，接口
 
 类： 关键字 class  ，可继承父类的成员及方法，关键字 extends
 
@@ -40,7 +42,7 @@ public class PC implements CPU{
 }
 ```
 
-## 枚举类
+### 枚举类
 
 > Java 枚举是一个特殊的类，一般表示一组常量，比如一年的 4 个季节，一个星期的 7 天，方向有东南西北等。
 
@@ -87,7 +89,7 @@ public class Test{
 
 ![image-20220825104145016](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202302281104377.png)
 
-## Vector类
+### Vector类
 
 Vector 类实现了一个动态数组。Vector 主要用在事先不知道数组的大小，或者是需要一个可以改变大小的数组的情况
 
@@ -133,7 +135,7 @@ public class vector {
 
 ![image-20220825104436687](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202302281115459.png)
 
-## String类
+### String类
 
 1、charAt() : char charAt（int index），返回index索引处的字符
 
@@ -184,7 +186,7 @@ String 对象是不可变的，每一个类似修改String对象的操作实际�
 > StringBuilder是在Java SE5.0中引人的，在此之前Java使用的是StringBuffer类，二者的区别是: StringBuilder 类是单线程的，StringBuffer 是多线程安全的，支持并发访问，因此StringBuffer的开销会大些。所以，在非多线程的情况下，应该优先选择
 > StringBuilder类。下 面以StringBuilder为例，进行介绍StringBuffer的使用
 
-## StringBuilder类的常用方法
+### StringBuilder类的常用方法
 
 1、append() : append(String s) 、append(int i) 、append(boolean b)
 
@@ -202,7 +204,7 @@ String 对象是不可变的，每一个类似修改String对象的操作实际�
 
 将字符串逆置
 
-## for each 循环
+### for each 循环
 
 > 格式：
 >
@@ -217,7 +219,7 @@ for(int i:a) {
 }                                   //输出 12345
 ```
 
-## List类
+### List类
 
 1、void add(int index , Object element)
 
@@ -1608,5 +1610,358 @@ public class TestInetSocketAddress {
 
 
 
-# IO流
+## IO流
+
+### File对象
+
+> 构造一个File对象，需要传入文件路径
+>
+> ~~~java
+>    File f = new File("C:\\Windows\\notepad.exe");
+> ~~~
+
+- File对象的常用方法
+
+  1. `getPath()`，返回构造方法传入的路径
+
+  2. `getAbsolutePath()`，返回绝对路径
+
+  3. `isFile()`，判断该File对象是否是一个已存在的文件
+
+  4. `isDirectory()`，判断该File对象是否是一个已存在的目录
+
+  5. `boolean canRead()`：是否可读
+
+  6. `boolean canWrite()`：是否可写
+
+  7. `boolean canExecute()`：是否可执行
+
+  8. `long length()`：文件字节大小
+
+  9. `createNewFile()`：创建一个新文件
+
+  10. `delete()`：删除该文件
+
+  11. `createTempFile()`：创建一个临时文件
+
+  12. `deleteOnExit()`：在JVM退出时自动删除该文件
+
+  13. `list()`和`listFiles()`：列出目录下的文件和子目录名
+
+      > `listFiles()`提供了一系列重载方法，可以过滤不想要的文件和目录
+      >
+      > ~~~java
+      > public class Main {
+      >     public static void main(String[] args) throws IOException {
+      >         File f = new File("C:\\Windows");
+      >         // 列出所有文件和子目录
+      >         File[] fs1 = f.listFiles(); 
+      >        
+      >         // 仅列出.exe文件
+      >         File[] fs2 = f.listFiles(new FilenameFilter() { 
+      >             public boolean accept(File dir, String name) {
+      >                 // 返回true表示接受该文件
+      >                 return name.endsWith(".exe"); 
+      >             }
+      >         });
+      >     }
+      > }
+      > ~~~
+
+- Path类
+
+> 位于 java.nio.file包
+>
+> ```
+> public class Main {
+>     public static void main(String[] args) throws IOException {
+>    		// 构造一个Path对象
+>         Path p1 = Paths.get(".", "project", "study"); 
+>         System.out.println(p1);
+>         
+>         // 转换为绝对路径
+>         Path p2 = p1.toAbsolutePath(); 
+>         System.out.println(p2);	
+>         
+>         // 转换为规范路径
+>         Path p3 = p2.normalize(); 
+>         System.out.println(p3);
+>         
+>         // 转换为File对象
+>         File f = p3.toFile();
+>         System.out.println(f);	
+>     }
+> }
+> 
+> ```
+>
+> ![image-20230421001723567](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202304210017697.png)
+
+### InputStream
+
+> **`InputStream`**是一个抽象类，是Java标准库提供的最基本的输入流，是所有**输入流**的==超类==
+
+- 最重要的方法：
+
+  **read()**  ： 读取输入流的下一字节，并返回字节表示的`int`值（ASCII码），读到末尾，则返回-1
+
+- FileInputStream是InputStream的一个子类，从文件流中读取数据
+
+  ```java
+  public void readFile() throws IOException {
+      // 创建一个FileInputStream对象:
+      InputStream input = new FileInputStream("src/readme.txt");
+      for (;;) {
+          int n = input.read(); // 反复调用read()方法，直到返回-1
+          if (n == -1) {
+              break;
+          }
+          System.out.println(n); // 打印byte的值
+      }
+      input.close(); // 关闭流
+  }
+  ```
+
+  ----
+
+  该程序具有隐患：如果出现IO错误，input就无法关闭，所以应该改为下面的形式
+
+  -----
+
+  ```Java
+  public void readFile() throws IOException {
+      InputStream input = null;
+      try {
+          input = new FileInputStream("src/readme.txt");
+          int n;
+          while ((n = input.read()) != -1) { // 利用while同时读取并判断
+              System.out.println(n);
+          }
+      } finally {
+          if (input != null) { input.close(); }
+      }
+  }
+  
+  //该写法比较复杂，更好的写法是利用Java 7引入的新的try(resource)的语法
+  
+  public void readFile() throws IOException {
+      try (InputStream input = new FileInputStream("src/readme.txt")) {
+          int n;
+          while ((n = input.read()) != -1) {
+              System.out.println(n);
+          }
+      } // try(resource = ...)中的对象如果实现了java.lang.AutoCloseable接口，编译器就会在此自动写入finally并调用close() （此处的InputStream就实现了该接口）
+  }
+  ```
+
+- 通过缓冲一次性读取多个字节
+
+  1. `int read(byte[] b)`：读取若干字节并填充到`byte[]`数组，返回读取的字节数
+  2. `int read(byte[] b, int off, int len)`：指定`byte[]`数组的偏移量和最大填充数
+
+  > 此时read()方法的返回值是实际读取了多少个字节，如果返回-1，则表示没有更多的数据了
+
+- `ByteArrayInputStream`可以在内存中模拟一个`InputStream`
+
+  ```Java
+  public class Main {
+      public static void main(String[] args) throws IOException {
+          byte[] data = { 72, 101, 108, 108, 111, 33 };
+          try (InputStream input = new ByteArrayInputStream(data)) {
+              int n;
+              StringBuilder sb = new StringBuilder();
+              while ((n = input.read()) != -1) {
+                  sb.append((char) n);
+              }
+              s = sb.toString();
+              System.out.println(s);
+          }
+      }
+  }
+  ```
+
+### OutputStream
+
+> **`OutputStream`**是一个抽象类，是Java标准库提供的最基本的输出流，是所有**输出流**的==超类==
+
+- 最重要的方法
+
+  **write(int b) ** ：这个方法会写入一个字节到输出流
+
+  > flush() 方法：写入数据的时候，出于效率的考虑，os把输出的字节先放到内存的一个缓冲区里，等到缓冲区写满了，再一次性写入，调用`flush()`可以强迫操作系统把缓冲区的内容立刻发送出去
+
+  ````java
+  public void writeFile() throws IOException {
+      try(OutputStream output = new FileOutputStream("out/readme.txt")){
+          
+      /***
+      output.write(72); // H
+      output.write(101); // e
+      output.write(108); // l
+      output.write(108); // l
+      output.write(111); // o
+      output.close();
+   	这种写法过于麻烦，更常见的方法是用OutputStream提供的重载方法write(byte[]) 
+   	****/
+      
+      output.write("Hello".getBytes("UTF-8"));   // Hello
+      output.close();
+      }
+  }
+  ````
+
+- `ByteArrayOutputStream`可以在内存中模拟一个`OutputStream`
+
+  ```java
+  public class Main {
+      public static void main(String[] args) throws IOException {
+          byte[] data;
+          try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+              output.write("Hello ".getBytes("UTF-8"));
+              output.write("world!".getBytes("UTF-8"));
+              data = output.toByteArray();
+          }
+          System.out.println(new String(data, "UTF-8"));
+      }
+  }
+  ```
+
+### Filter模式
+
+> `InputStream`分为两大类：
+>
+> 1. 直接提供数据的基础`InputStream`：
+>    - FileInputStream ：从文件读取数据
+>    - ByteArrayInputStream ：内存中模拟输入流
+>    - ServletInputStream ：从HTTP请求读取数据
+>    - Socket.getInputStream() ：从TCP连接读取数据
+> 2. 提供额外附加功能的`InputStream`
+>    - BufferedInputStream ：缓冲功能
+>    - DigestInputStream ： 计算签名功能
+>    - CipherInputStream ：加密/解密功能
+
+---------
+
+**当我们需要给一个`InputStream`附加各种功能时，先确定数据来源，例如，`FileInputStream`，数据来源自文件**
+
+`InputStream file = new FileInputStream("test.gz");`
+
+**紧接着，我们希望能提供缓冲的功能来提高读取的效率，因此我们用`BufferedInputStream`包装这个`InputStream`**
+
+`InputStream buffered = new BufferedInputStream(file);`
+
+**最后，假设该文件已经用gzip压缩了，我们希望直接读取解压缩的内容，就可以再包装一个`GZIPInputStream`**
+
+`InputStream gzip = new GZIPInputStream(buffered);`
+
+==无论我们包装多少次，得到的对象始终是InputStream==
+
+上述这种通过一个“基础”组件再叠加各种“附加”功能组件的模式，称之为Filter模式
+
+-----
+
+### 操作Zip
+
+![image-20230421103111079](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202304211031201.png)
+
+要创建一个`ZipInputStream`，通常是传入一个`FileInputStream`作为数据源，然后，循环调用`getNextEntry()`，直到返回`null`，表示zip流结束，一个`ZipEntry`表示一个压缩文件或目录
+
+### Reader
+
+> IO库提供的另一个输入流接口
+>
+> `InputStream`以`byte`为单位读取，而`Reader`以`char`为单位读取
+
+- read() 方法：`InputStream`是一个字节流，即以`byte`为单位读取，而`Reader`是一个字符流，即以`char`为单位读取
+
+  read(char[] c) 方法：返回实际读入的字符个数，最大不超过char[]数组的长度。返回-1表示流结束
+
+- `CharArrayReader`：内存中模拟一个`Reader`，和`ByteArrayInputStream`非常类似
+
+  ```JAVA 
+  try (Reader reader = new CharArrayReader("Hello".toCharArray())) {
+  }
+  ```
+
+- `StringReader`：直接把String作为数据源
+
+  ```Java
+  try (Reader reader = new CharArrayReader("Hello".toCharArray())) {
+  }
+  ```
+
+-----
+
+**本质上Reader是一个基于InputStream的byte到char的转换器**
+
+> 如果我们已经有一个`InputStream`，想把它转换为`Reader`，是完全可行的。`InputStreamReader`就是这样一个转换器，它可以把任何`InputStream`转换为`Reader`
+
+```java
+// 持有InputStream:
+InputStream input = new FileInputStream("src/readme.txt");
+// 变换为Reader:
+Reader reader = new InputStreamReader(input, "UTF-8");
+```
+
+### Writer
+
+> `Reader`是带编码转换器的`InputStream`，它把`byte`转换为`char`
+>
+> 而`Writer`就是带编码转换器的`OutputStream`，它把`char`转换为`byte`并输出
+
+![image-20230421111222179](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202304211112234.png)
+
+### PrintStream和PrintWriter
+
+#### PrintStream
+
+> PrintStream`是一种`FilterOutputStream,它在`OutputStream`的接口上，额外提供了==print() 方法==和==println() 方法==
+
+我们经常使用的`System.out.println()`实际上就是使用`PrintStream`打印各种数据。`System.out`是系统默认提供的`PrintStream`
+
+`System.err`是系统默认提供的标准错误输出
+
+**PrintStream和OutputStream相比，不会抛出IOException，这样我们在编写代码的时候，就不必捕获IOException**
+
+---
+
+#### PrintWriter
+
+PrintStream最终输出的总是byte数据，而PrintWriter则是扩展了Writer接口，它的print()/println()方法最终输出的是char数据。两者的使用方法几乎是一模一样的
+
+### 使用Files
+
+> `Files`是`java.nio`包里面的类,封装了很多读写文件的简单方法
+
+```java
+//把一个文件的全部内容读取为一个byte[]
+byte[] data = Files.readAllBytes(Path.of("/path/to/file.txt"));
+
+//把一个文件的全部内容读取为String
+// 默认使用UTF-8编码读取:
+String content1 = Files.readString(Path.of("/path/to/file.txt"));
+// 可指定编码:
+String content2 = Files.readString(Path.of("/path", "to", "file.txt"), StandardCharsets.ISO_8859_1);
+
+// 按行读取并返回每行内容:
+List<String> lines = Files.readAllLines(Path.of("/path/to/file.txt"));
+```
+
+```java
+//写入文件也非常方便
+// 写入二进制文件:
+byte[] data = ...
+Files.write(Path.of("/path/to/file.txt"), data);
+
+// 写入文本并指定编码:
+Files.writeString(Path.of("/path/to/file.txt"), "文本内容...", StandardCharsets.ISO_8859_1);
+
+// 按行写入文本:
+List<String> lines = ...
+Files.write(Path.of("/path/to/file.txt"), lines);
+```
+
+**`Files`提供的读写方法，受内存限制，只能读写小文件，例如配置文件等，不可一次读入几个G的大文件。读写大型文件仍然要使用文件流**
+
+----
 
