@@ -1,2 +1,2 @@
 # GitLearning
-This is a study note of yangxz about git
+This is a collection of Yangxz's study notes
