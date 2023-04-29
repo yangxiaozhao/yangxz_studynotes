@@ -1070,7 +1070,7 @@ running状态的线程可以调用yield()方法主动放弃执行，从running�
 
 > public @interface 注解名 {  定义内容 }
 
-![image-20230412234330596](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202304122343717.png)
+![img202304122343717](https://cdn.jsdelivr.net/gh/yangxiaozhao/TyporaImg@master/img202304271554508.png)
 
 ```java
 public class test{
